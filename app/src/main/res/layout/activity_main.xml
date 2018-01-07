@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context="com.b8a3.lottiestudy.MainActivity">
 
     <com.airbnb.lottie.LottieAnimationView
@@ -15,8 +15,15 @@
         app:lottie_autoPlay="true"
         app:lottie_fileName="Mobilo/A.json"
         app:lottie_loop="true"
+        app:lottie_imageAssetsFolder="Images\WeAccept"
         />
 
+    <TextView
+        android:id="@+id/tv_json_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        tools:text="json 文件"/>
 
     <Button
         android:id="@+id/bt_1"

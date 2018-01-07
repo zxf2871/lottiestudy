@@ -2,14 +2,16 @@ package com.b8a3.lottiestudy;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
-    final static String[] jsonFileNames = {"squares-AlBoardman.json",
+    final static String TAG = "MainActivity";
+    final static String[] jsonFileNames = {"9squares-AlBoardman.json",
             "City.json",
             "EmptyState.json",
             "HamburgerArrow.json",
@@ -62,13 +64,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private LottieAnimationView mLottieView;
     private Button mBt1;
+    private TextView mJsonNameTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLottieView = findViewById(R.id.lottie_v);
+        mJsonNameTV = findViewById(R.id.tv_json_name);
         mBt1 = findViewById(R.id.bt_1);
+        mBt1.setOnClickListener(this);
 
     }
 
@@ -77,9 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = view.getId();
         int l = jsonFileNames.length;
         int position = (int) (Math.random()*l);
+        String jsonFile = jsonFileNames[position];
+        Log.i(TAG, "change to : 第"+position+"个"+jsonFile);
+        mJsonNameTV.setText(jsonFile);
         switch (id) {
             case R.id.bt_1:
-                mLottieView.setAnimation(position);
+                mLottieView.setAnimation(jsonFile);
+                mLottieView.resumeAnimation();
                 break;
         }
     }
