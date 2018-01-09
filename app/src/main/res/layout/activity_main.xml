@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:background="#33000000"
     tools:context="com.b8a3.lottiestudy.MainActivity">
 
     <com.airbnb.lottie.LottieAnimationView
@@ -16,6 +17,15 @@
         app:lottie_fileName="Mobilo/A.json"
         app:lottie_loop="true"
         app:lottie_imageAssetsFolder="Images\WeAccept"
+        app:lottie_cacheStrategy="none"
+        app:lottie_colorFilter="@color/colorAccent"
+        app:lottie_enableMergePathsForKitKatAndAbove="true"
+        app:lottie_progress="50"
+        app:lottie_rawRes=""
+        app:lottie_repeatCount=""
+        app:lottie_repeatMode=""
+        app:lottie_scale=""
+        app:srcCompat="@color/colorAccent"
         />
 
     <TextView
@@ -24,6 +34,12 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         tools:text="json 文件"/>
+
+    <Button
+        android:id="@+id/bt_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="下一个" />
 
     <Button
         android:id="@+id/bt_1"

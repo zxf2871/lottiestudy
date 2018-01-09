@@ -1,5 +1,6 @@
 package com.b8a3.lottiestudy;
 
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,7 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.airbnb.lottie.Cancellable;
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.OnCompositionLoadedListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     final static String TAG = "MainActivity";
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private LottieAnimationView mLottieView;
     private Button mBt1;
+    private Button mBt0;
     private TextView mJsonNameTV;
 
     @Override
@@ -75,20 +80,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBt1 = findViewById(R.id.bt_1);
         mBt1.setOnClickListener(this);
 
+        mBt0 = findViewById(R.id.bt_0);
+        mBt0.setOnClickListener(this);
+
+        Cancellable cancellable = LottieComposition.Factory.fromAssetFileName(this, "xyz.jaon", new OnCompositionLoadedListener() {
+            @Override
+            public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                mLottieView.setComposition(composition);
+                mLottieView.playAnimation();
+            }
+        });
+
+        cancellable.cancel();
     }
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        int l = jsonFileNames.length;
-        int position = (int) (Math.random()*l);
-        String jsonFile = jsonFileNames[position];
-        Log.i(TAG, "change to : 第"+position+"个"+jsonFile);
-        mJsonNameTV.setText(jsonFile);
         switch (id) {
-            case R.id.bt_1:
+            case R.id.bt_0:
+                int l = jsonFileNames.length;
+                int position = (int) (Math.random() * l);
+                String jsonFile = jsonFileNames[position];
+                Log.i(TAG, "change to : 第" + position + "个" + jsonFile);
+                mJsonNameTV.setText(jsonFile);
                 mLottieView.setAnimation(jsonFile);
-                mLottieView.resumeAnimation();
+                break;
+
+            case R.id.bt_1:
+                mLottieView.playAnimation();
                 break;
         }
     }
