@@ -1,5 +1,6 @@
 package com.b8a3.lottiestudy;
 
+import android.animation.ValueAnimator;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -67,31 +68,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     private LottieAnimationView mLottieView;
+    private LottieAnimationView mLottieView1;
     private Button mBt1;
     private Button mBt0;
+    private Button mBt2;
     private TextView mJsonNameTV;
+    private TextView mProgressTv;
+    private String jsonFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLottieView = findViewById(R.id.lottie_v);
+        mLottieView1 = findViewById(R.id.lottie_v1);
         mJsonNameTV = findViewById(R.id.tv_json_name);
+        mProgressTv = findViewById(R.id.progress_tv);
         mBt1 = findViewById(R.id.bt_1);
         mBt1.setOnClickListener(this);
 
         mBt0 = findViewById(R.id.bt_0);
         mBt0.setOnClickListener(this);
 
-        Cancellable cancellable = LottieComposition.Factory.fromAssetFileName(this, "xyz.jaon", new OnCompositionLoadedListener() {
-            @Override
-            public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                mLottieView.setComposition(composition);
-                mLottieView.playAnimation();
-            }
-        });
+        mBt2 = findViewById(R.id.bt_2);
+        mBt2.setOnClickListener(this);
 
-        cancellable.cancel();
+//        Cancellable cancellable = LottieComposition.Factory.fromAssetFileName(this, "xyz.jaon", new OnCompositionLoadedListener() {
+//            @Override
+//            public void onCompositionLoaded(@Nullable LottieComposition composition) {
+//                mLottieView.setComposition(composition);
+//                mLottieView.playAnimation();
+//            }
+//        });
+//
+//        cancellable.cancel();
+
     }
 
     @Override
@@ -101,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bt_0:
                 int l = jsonFileNames.length;
                 int position = (int) (Math.random() * l);
-                String jsonFile = jsonFileNames[position];
+                jsonFile = jsonFileNames[position];
                 Log.i(TAG, "change to : 第" + position + "个" + jsonFile);
                 mJsonNameTV.setText(jsonFile);
                 mLottieView.setAnimation(jsonFile);
@@ -110,6 +121,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bt_1:
                 mLottieView.playAnimation();
                 break;
+
+                case R.id.bt_2:
+                    mLottieView1.setAnimation(jsonFile);
+                    mLottieView1.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            String percent = String.valueOf((int)((float)animation.getAnimatedValue()*100))+"%";
+
+                            mProgressTv.setText(percent);
+                        }
+                    });
+
+
+                    ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            mLottieView1.setProgress((Float) animation.getAnimatedValue());
+                        }
+                    });
+                    mLottieView1.playAnimation();
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mLottieView!=null){
+            mLottieView.cancelAnimation();
+        }
+        if(mLottieView1!=null){
+            mLottieView1.cancelAnimation();
         }
     }
 }
