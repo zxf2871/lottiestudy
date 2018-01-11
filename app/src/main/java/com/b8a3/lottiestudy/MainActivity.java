@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.Cancellable;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.LottieDrawable;
 import com.airbnb.lottie.OnCompositionLoadedListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -68,32 +70,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     private LottieAnimationView mLottieView;
-    private LottieAnimationView mLottieView1;
+    private LottieDrawable mLottieDrawable;
+    private LottieDrawable mLottieDrawableBackground;
     private Button mBt1;
-    private Button mBt0;
-    private Button mBt2;
     private TextView mJsonNameTV;
     private TextView mProgressTv;
-    private String jsonFile;
+    private String jsonFile = "Mobilo/A.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLottieView = findViewById(R.id.lottie_v);
-        mLottieView1 = findViewById(R.id.lottie_v1);
+        mLottieDrawable = new LottieDrawable();
+        mLottieDrawableBackground = new LottieDrawable();
         mJsonNameTV = findViewById(R.id.tv_json_name);
         mProgressTv = findViewById(R.id.progress_tv);
         mBt1 = findViewById(R.id.bt_1);
         mBt1.setOnClickListener(this);
 
-        mBt0 = findViewById(R.id.bt_0);
-        mBt0.setOnClickListener(this);
 
-        mBt2 = findViewById(R.id.bt_2);
-        mBt2.setOnClickListener(this);
+        ((ImageView)findViewById(R.id.lottie_v1)).setImageDrawable(mLottieDrawable);
+        findViewById(R.id.lottie_v2).setBackgroundDrawable(mLottieDrawableBackground);
 
-//        Cancellable cancellable = LottieComposition.Factory.fromAssetFileName(this, "xyz.jaon", new OnCompositionLoadedListener() {
+//        Cancellable cancellable = LottieComposition.Factory.fromAssetFileName(this, "xyz.json", new OnCompositionLoadedListener() {
 //            @Override
 //            public void onCompositionLoaded(@Nullable LottieComposition composition) {
 //                mLottieView.setComposition(composition);
@@ -109,39 +109,90 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
-            case R.id.bt_0:
+            case R.id.bt_1:
+
+                /******************************************* LottieAnimationView ***********************************/
+
                 int l = jsonFileNames.length;
                 int position = (int) (Math.random() * l);
                 jsonFile = jsonFileNames[position];
                 Log.i(TAG, "change to : 第" + position + "个" + jsonFile);
                 mJsonNameTV.setText(jsonFile);
                 mLottieView.setAnimation(jsonFile);
-                break;
+                Cancellable cancellable0 = LottieComposition.Factory.fromAssetFileName(this, jsonFile, new OnCompositionLoadedListener() {
+                    @Override
+                    public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                        mLottieView.setComposition(composition);
+                        mLottieView.playAnimation();
+                    }
+                });
 
-            case R.id.bt_1:
+                mLottieView.setRepeatCount(LottieDrawable.INFINITE);
                 mLottieView.playAnimation();
-                break;
-
-                case R.id.bt_2:
-                    mLottieView1.setAnimation(jsonFile);
-                    mLottieView1.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            String percent = String.valueOf((int)((float)animation.getAnimatedValue()*100))+"%";
-
-                            mProgressTv.setText(percent);
-                        }
-                    });
 
 
-                    ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
-                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            mLottieView1.setProgress((Float) animation.getAnimatedValue());
-                        }
-                    });
-                    mLottieView1.playAnimation();
+
+
+                /******************************************* ImageView + Drawable ***********************************/
+
+                mLottieDrawable.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        String percent = String.valueOf((int) ((float) animation.getAnimatedValue() * 100)) + "%";
+                        mProgressTv.setText(percent);
+                    }
+                });
+
+                Cancellable cancellable = LottieComposition.Factory.fromAssetFileName(this, jsonFile, new OnCompositionLoadedListener() {
+                    @Override
+                    public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                        mLottieDrawable.setComposition(composition);
+                        mLottieDrawable.playAnimation();
+                    }
+                });
+
+                ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mLottieDrawable.setProgress((Float) animation.getAnimatedValue());
+                    }
+                });
+                mLottieDrawable.setMaxProgress(0.6f);
+                mLottieDrawable.setRepeatCount(LottieDrawable.INFINITE);
+                mLottieDrawable.setRepeatMode(LottieDrawable.REVERSE);
+                mLottieDrawable.playAnimation();
+
+
+
+                mLottieDrawableBackground.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        String percent = String.valueOf((int) ((float) animation.getAnimatedValue() * 100)) + "%";
+                        mProgressTv.setText(percent);
+                    }
+                });
+
+                final ValueAnimator animator1 = ValueAnimator.ofFloat(0f, 1f);
+                animator1.setDuration(3000);
+                animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mLottieDrawableBackground.setProgress((Float) animation.getAnimatedValue());
+                    }
+                });
+
+                Cancellable cancellable1 = LottieComposition.Factory.fromAssetFileName(this, jsonFile, new OnCompositionLoadedListener() {
+                @Override
+                public void onCompositionLoaded(@Nullable LottieComposition composition) {
+                    mLottieDrawableBackground.setComposition(composition);
+                    animator1.start();
+                }
+            });
+                mLottieDrawableBackground.setMaxProgress(0.6f);
+                mLottieDrawableBackground.setRepeatCount(LottieDrawable.INFINITE);
+                mLottieDrawableBackground.setRepeatMode(LottieDrawable.REVERSE);
+                mLottieDrawableBackground.playAnimation();
                 break;
         }
     }
@@ -149,11 +200,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mLottieView!=null){
+        if (mLottieView != null) {
             mLottieView.cancelAnimation();
         }
-        if(mLottieView1!=null){
-            mLottieView1.cancelAnimation();
+        if (mLottieDrawable != null) {
+            mLottieDrawableBackground.cancelAnimation();
+            mLottieDrawable.cancelAnimation();
+            mLottieDrawable.recycleBitmaps();
+            mLottieDrawableBackground.recycleBitmaps();
         }
     }
 }
