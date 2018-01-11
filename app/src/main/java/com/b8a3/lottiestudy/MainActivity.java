@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.airbnb.lottie.Cancellable;
@@ -70,11 +71,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     private LottieAnimationView mLottieView;
+    private LottieAnimationView mLottieView1;
     private LottieDrawable mLottieDrawable;
     private LottieDrawable mLottieDrawableBackground;
     private Button mBt1;
     private TextView mJsonNameTV;
     private TextView mProgressTv;
+    private SeekBar mSeekBar;
     private String jsonFile = "Mobilo/A.json";
 
     @Override
@@ -82,10 +85,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mLottieView = findViewById(R.id.lottie_v);
+        mLottieView1 = findViewById(R.id.lottie_v_1);
         mLottieDrawable = new LottieDrawable();
         mLottieDrawableBackground = new LottieDrawable();
         mJsonNameTV = findViewById(R.id.tv_json_name);
         mProgressTv = findViewById(R.id.progress_tv);
+        mSeekBar = findViewById(R.id.sb_01);
+
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mLottieView1.setProgress((float) progress/100);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         mBt1 = findViewById(R.id.bt_1);
         mBt1.setOnClickListener(this);
 
@@ -123,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onCompositionLoaded(@Nullable LottieComposition composition) {
                         mLottieView.setComposition(composition);
+                        mLottieView1.setComposition(composition);
                         mLottieView.playAnimation();
                     }
                 });
@@ -175,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 final ValueAnimator animator1 = ValueAnimator.ofFloat(0f, 1f);
                 animator1.setDuration(3000);
+                animator1.setRepeatCount(-1);
                 animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
